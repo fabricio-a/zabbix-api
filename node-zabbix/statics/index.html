@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabbix - Report Generator</title>
+
+    <link rel="stylesheet" href="materialize/css/materialize.min.css"  media="screen,projection"/>
+    <link rel="stylesheet" href="index.css" media="screen"/>
+    <link rel="stylesheet" href="materialize/icons/icons.css" media="screen"/>
+
+    <script type="text/javascript" src="materialize/js/materialize.min.js"></script>
+    <script type="text/javascript" src="index.js.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+   <div class='formulario'>
+    <form action="http://localhost:4444/generate-report" method="POST">
+        <h3>
+            Gerador Relatório - Zabbix
+        </h3>
+        <label for="test1">Campo Teste</label>
+        <input type="text" name="test1"/>
+        <label for="test2">Campo Teste 2</label>
+        <input type="text" name="test2"/>
+        <label for="test3">Campo Teste 3</label>
+        <input type="text" name="test3"/>
+        <button>Gerar</button>
+    </form>
+   </div>
+</body>
+</html>

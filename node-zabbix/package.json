@@ -1,0 +1,26 @@
+{
+  "name": "zabbix",
+  "version": "1.0.0",
+  "description": "Integracao com API Zabbix",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon --exec babel-node ./src/index.js"
+  },
+  "author": "Fabricio Santana - Rooost",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "html-pdf-node": "^1.0.7",
+    "knex": "^0.95.11",
+    "sqlite3": "^5.0.2",
+    "zabbix-promise": "^2.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/node": "^7.15.8",
+    "@babel/preset-env": "^7.15.8"
+  }
+}

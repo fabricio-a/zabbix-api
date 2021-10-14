@@ -1,0 +1,18 @@
+@font-face {
+  font-family: Catamaran-Regular;
+  src: url('assets/fonts/Catamaran-Regular.ttf');
+}
+
+@font-face {
+  font-family: Catamaran-Bold;
+  src: url('assets/fonts/Catamaran-Bold.ttf');
+}
+
+@font-face {
+  font-family: Catamaran-Light;
+  src: url('assets/fonts/Catamaran-Light.ttf');
+}
+
+* {
+  font-family: 'Catamaran-Light';
+}
