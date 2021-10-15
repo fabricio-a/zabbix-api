@@ -48,13 +48,12 @@ export default function MainScreen() {
         html2canva(input)
             .then(canva => {
                 const imgData = canva.toDataURL('image/png')
-                console.log(imgData)
+                input.style.height = '95vh'
                 const pdf = new jsPDF()
                 pdf.addImage(imgData, 'JPEG', 0, 0)
                 pdf.save('report.pdf')
+
             })
-        
-        input.style.height = '95vh'
     }
 
     const getHosts = () => {
