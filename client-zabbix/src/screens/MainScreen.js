@@ -18,7 +18,8 @@ const useStyle = makeStyles({
 
     data: {
         boxSizing: 'border-box',
-        backgroundColor: '#00f',
+        backgroundColor: 'rgb(0,240,0)',
+        color: 'black',
         width: '100%',
         height: '95vh',
         padding: '10px',
@@ -39,27 +40,39 @@ const useStyle = makeStyles({
 export default function MainScreen() {
     const classes = useStyle()
 
+    const proxyName = {
+        10447: 'Brasília',
+        10481: 'São Paulo',
+        0: 'Curitiba'
+    }
+
     const [allHosts, setHosts] = React.useState([])
 
     const getPDF = () => {
         const input = document.getElementById('pdfArea')
         input.style.height = '100%'
+        
 
         html2canva(input)
             .then(canva => {
                 const imgData = canva.toDataURL('image/png')
                 input.style.height = '95vh'
-                const pdf = new jsPDF()
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'in', 
+                    format: [14,10]
+                })
+                pdf.addImage(imgData, 'JPEG', 0, 0)
+                pdf.addPage()
                 pdf.addImage(imgData, 'JPEG', 0, 0)
                 pdf.save('report.pdf')
-
             })
     }
 
     const getHosts = () => {
         fetch('http://172.16.10.65:4444/generate-report/hosts')
             .then(res => res.json())
-            .then(hosts => setHosts([...allHosts, ...hosts]))
+            .then(hosts => setHosts(hosts))
     }
 
     return (
@@ -96,7 +109,7 @@ export default function MainScreen() {
                     <div className={classes.data} id='pdfArea'>
                         {
                             allHosts.map(host => 
-                                <p key={host.hostid}>{host.hostid} - {host.host}</p>    
+                                <p key={host.hostid}>{host.hostid} - {host.host} - {proxyName[host.proxy_hostid]}</p>    
                             )
                         }
                     </div>
