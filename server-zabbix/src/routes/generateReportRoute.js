@@ -54,4 +54,33 @@ generateReportRoute.get('/grouphosts', async (req, res) => {
     }
 })
 
+generateReportRoute.get('/history', async (req, res) => {
+    const {
+        hostids,
+        time_from,
+        time_till
+    } = req.query
+
+    let hostGetParams = {
+        output: 'extend',
+    }
+
+    try {
+        const zabbix = Zabbix()
+
+        await zabbix.login()
+
+        const host = await zabbix.request(reqType, hostGetParams)
+
+        await zabbix.logout()
+
+        res.send(host)
+    } catch(error) {
+        console.log(error)
+        res.json({
+            error: 'An error occured!'
+        })
+    }
+})
+
 export default generateReportRoute

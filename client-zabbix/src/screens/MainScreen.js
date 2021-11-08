@@ -8,8 +8,12 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import DatePicker from '@mui/lab/DatePicker'
 
+import Report from './report'
+
 import html2canva from 'html2canvas'
 import jsPDF from 'jspdf'
+
+const report = Report()
 
 const useStyle = makeStyles({
     root: {
@@ -121,6 +125,10 @@ export default function MainScreen() {
     React.useEffect(() => {
         getHosts()
     }, [hostGroupSelect])
+
+    React.useEffect(() => {
+        report.getHistory()
+    }, [allHosts])
 
     return (
         <div className={classes.root}>
