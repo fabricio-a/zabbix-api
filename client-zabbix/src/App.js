@@ -4,11 +4,17 @@ import { createTheme, ThemeProvider } from '@mui/material'
 
 const theme = createTheme({
   palette: {
+    text: {
+      primary: '#000',
+      secondary: '#000',
+      disabled: '#000'
+    },
     primary: {
-      main: '#00f000'
+      main: '#00f000',
+      contrastText: '#000'
     },
     secondary: {
-      main: '#fff'
+      main: '#000'
     }
   }
 })

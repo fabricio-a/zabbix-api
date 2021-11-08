@@ -3,6 +3,10 @@ import { Button, Grid }  from '@mui/material'
 import logo from '../assets/logo-roost.png'
 import { makeStyles } from '@material-ui/styles'
 import MySelect from '../components/MySelect'
+import TextField from '@mui/material/TextField'
+import AdapterDateFns from '@mui/lab/AdapterDateFns'
+import LocalizationProvider from '@mui/lab/LocalizationProvider'
+import DatePicker from '@mui/lab/DatePicker'
 
 import html2canva from 'html2canvas'
 import jsPDF from 'jspdf'
@@ -19,7 +23,7 @@ const useStyle = makeStyles({
 
     data: {
         boxSizing: 'border-box',
-        backgroundColor: 'rgb(0,240,0)',
+        backgroundColor: 'white',
         color: 'black',
         width: '100%',
         height: '95vh',
@@ -41,22 +45,34 @@ const useStyle = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-around',
-        alignItems: 'center',
-        height: '300px'
+        alignItems: 'start',
+        height: '350px',
+        backgroundColor: '#fff',
+        padding: '20px',
+        borderRadius: '5px'
+    }, 
+    
+    bt: {
+        width: '240px'
+    },
+
+    dt: {
+        backgroundColor: 'rgb(0,240,0)',
+        color: 'rgb(255,255,255)',
+        width: '240px',
+        borderRadius: '3px'
     }
 })
 
 export default function MainScreen() {
     const classes = useStyle()
 
-    const proxyName = {
-        10447: 'Brasília',
-        10481: 'São Paulo',
-        0: 'Curitiba'
-    }
-
     const [allHosts, setHosts] = React.useState([])
-    const [hostSelect, setHostSelect] = React.useState('none')
+    const [allHostGroup, setHostGroup] = React.useState([])
+    const [dateInf, setDateInf] = React.useState([])
+    const [dateSup, setDateSup] = React.useState([])
+    const [hostSelect, setHostSelect] = React.useState([])
+    const [hostGroupSelect, setHostGroupSelect] = React.useState([])
 
     const getPDF = () => {
         const input = document.getElementById('pdfArea')
@@ -79,17 +95,32 @@ export default function MainScreen() {
     }
 
     const getHosts = () => {
-        fetch('http://172.16.10.65:4444/generate-report/hosts')
+        console.log('http://172.16.10.65:4444/generate-report/hosts?groupids='+'['+hostGroupSelect.toString()+']')
+        fetch('http://172.16.10.65:4444/generate-report/hosts?groupids='+hostGroupSelect.toString())
             .then(res => res.json())
             .then(hosts => {
-                setHosts(hosts)
                 console.log(hosts)
+                setHosts(hosts)
+            })
+    }
+
+    const getGroupHosts = () => {
+        fetch('http://172.16.10.65:4444/generate-report/grouphosts')
+            .then(res => res.json())
+            .then(grouphosts => {
+                console.log(grouphosts)
+                setHostGroup(grouphosts)
             })
     }
 
     React.useEffect(() => {
         getHosts()
+        getGroupHosts()
     }, [])
+
+    React.useEffect(() => {
+        getHosts()
+    }, [hostGroupSelect])
 
     return (
         <div className={classes.root}>
@@ -112,17 +143,46 @@ export default function MainScreen() {
                         <div className={classes.form}>
                             <MySelect 
                                 id='host-select'
-                                label='Host'
-                                data={allHosts.map(host =>{ return {value: host.hostid, label: host.host} })}
-                                hostSelect={hostSelect}
-                                setHostSelect={(e) => setHostSelect(e.target.value)}    
+                                label='Grupos de Hosts'
+                                data={allHostGroup.map(group =>{ return {value: group.groupid, label: group.name} })}
+                                selectValue={hostGroupSelect}
+                                selectHandler={(e) => setHostGroupSelect(e.target.value)}    
                             />
 
-                            <Button variant='contained' color='primary' onClick={getHosts}>
+                            <MySelect 
+                                id='host-select'
+                                label='Hosts'
+                                data={allHosts.map(host =>{ return {value: host.hostid, label: host.host} })}
+                                selectValue={hostSelect}
+                                selectHandler={(e) => setHostSelect(e.target.value)}    
+                            />
+
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Data Inicial"
+                                    value={dateInf}
+                                    onChange={(newValue) => {
+                                    setDateInf(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField {...params} className={classes.dt}/>}
+                                />
+
+                                <DatePicker
+                                    label="Data Final"
+                                    className={classes.dt}
+                                    value={dateSup}
+                                    onChange={(newValue) => {
+                                    setDateSup(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField {...params} className={classes.dt}/>}
+                                />
+                            </LocalizationProvider>
+
+                            <Button className={classes.bt} variant='contained' color='primary' onClick={getHosts}>
                                 Gerar Relatório
                             </Button>
     
-                            <Button variant='contained' color='primary' onClick={getPDF}>
+                            <Button className={classes.bt} variant='contained' color='primary' onClick={getPDF}>
                                 Gerar PDF
                             </Button>
                         </div>

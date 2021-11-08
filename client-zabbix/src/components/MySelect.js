@@ -6,6 +6,11 @@ const useStyle = makeStyles({
     formControl: {
         margin: 1,
         minWidth: 120,
+    },
+    select: {
+        backgroundColor: 'rgb(0,240,0)',
+        color: 'rgb(255,255,255)',
+        width: '240px'
     }
 })
 
@@ -16,21 +21,23 @@ export default function MySelect(props) {
         id,
         label,
         data,
-        hostSelect,
-        setHostSelect
+        selectValue,
+        selectHandler
      } = props
     return(
 
-        <FormControl variant="filled" className={classes.formControl}>
+        <FormControl className={classes.formControl}>
             <InputLabel id={id}>{label}</InputLabel>
             <Select
                 labelId={id}
                 id={id+'-select'}
-                value={hostSelect}
-                onChange={setHostSelect}
+                value={selectValue}
+                onChange={selectHandler}
+                multiple
+                className={classes.select}
             >
-                <MenuItem value="none">
-                    <em>None</em>
+                <MenuItem value="-1">
+                    Todos
                 </MenuItem>
                 {
                     data.map(element => <MenuItem value={element.value}>{element.label}</MenuItem>)
