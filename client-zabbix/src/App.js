@@ -1,6 +1,5 @@
 import './App.css';
 import MainScreen from './screens/MainScreen'
-import { makeStyles } from '@mui/material/styles';
 import { createTheme, ThemeProvider } from '@mui/material'
 
 const theme = createTheme({
@@ -9,7 +8,7 @@ const theme = createTheme({
       main: '#00f000'
     },
     secondary: {
-      main: '#181818'
+      main: '#fff'
     }
   }
 })

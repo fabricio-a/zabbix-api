@@ -8,6 +8,5 @@ const serverRoutes = Router()
 
 serverRoutes.use('/generate-report', generateReportRoute)
 serverRoutes.use('/report', express.static(clientPath))
-serverRoutes.use('/report2', express.static(clientPath))
 
 export default serverRoutes
