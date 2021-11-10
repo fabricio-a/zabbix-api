@@ -8,7 +8,6 @@ const useStyle = makeStyles({
         minWidth: 120,
     },
     select: {
-        backgroundColor: 'rgb(0,240,0)',
         color: 'rgb(255,255,255)',
         width: '240px'
     }
@@ -29,6 +28,7 @@ export default function MySelect(props) {
         <FormControl className={classes.formControl}>
             <InputLabel id={id}>{label}</InputLabel>
             <Select
+                label={label}
                 labelId={id}
                 id={id+'-select'}
                 value={selectValue}

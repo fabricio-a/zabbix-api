@@ -3,10 +3,7 @@ import { Button, Grid }  from '@mui/material'
 import logo from '../assets/logo-roost.png'
 import { makeStyles } from '@material-ui/styles'
 import MySelect from '../components/MySelect'
-import TextField from '@mui/material/TextField'
-import AdapterDateFns from '@mui/lab/AdapterDateFns'
-import LocalizationProvider from '@mui/lab/LocalizationProvider'
-import DatePicker from '@mui/lab/DatePicker'
+import DateTimeSelect from '../components/DateTimeSelect'
 
 import Report from './report'
 
@@ -58,13 +55,6 @@ const useStyle = makeStyles({
     
     bt: {
         width: '240px'
-    },
-
-    dt: {
-        backgroundColor: 'rgb(0,240,0)',
-        color: 'rgb(255,255,255)',
-        width: '240px',
-        borderRadius: '3px'
     }
 })
 
@@ -73,10 +63,11 @@ export default function MainScreen() {
 
     const [allHosts, setHosts] = React.useState([])
     const [allHostGroup, setHostGroup] = React.useState([])
-    const [dateInf, setDateInf] = React.useState([])
-    const [dateSup, setDateSup] = React.useState([])
+    const [dateFrom, setDateFrom] = React.useState(new Date())
+    const [dateTill, setDateTill] = React.useState(new Date())
     const [hostSelect, setHostSelect] = React.useState([])
     const [hostGroupSelect, setHostGroupSelect] = React.useState([])
+    const [reportData, setReportData] = React.useState([])
 
     const getPDF = () => {
         const input = document.getElementById('pdfArea')
@@ -99,7 +90,6 @@ export default function MainScreen() {
     }
 
     const getHosts = () => {
-        console.log('http://172.16.10.65:4444/generate-report/hosts?groupids='+'['+hostGroupSelect.toString()+']')
         fetch('http://172.16.10.65:4444/generate-report/hosts?groupids='+hostGroupSelect.toString())
             .then(res => res.json())
             .then(hosts => {
@@ -117,6 +107,15 @@ export default function MainScreen() {
             })
     }
 
+    const generateReport = () => {
+        report
+            .getHistory(hostSelect, dateFrom.getTime(), dateTill.getTime())
+            .then((dados) => {
+                console.log(dados)
+                setReportData(dados)
+            })
+    }
+
     React.useEffect(() => {
         getHosts()
         getGroupHosts()
@@ -125,10 +124,6 @@ export default function MainScreen() {
     React.useEffect(() => {
         getHosts()
     }, [hostGroupSelect])
-
-    React.useEffect(() => {
-        report.getHistory()
-    }, [allHosts])
 
     return (
         <div className={classes.root}>
@@ -165,28 +160,10 @@ export default function MainScreen() {
                                 selectHandler={(e) => setHostSelect(e.target.value)}    
                             />
 
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <DatePicker
-                                    label="Data Inicial"
-                                    value={dateInf}
-                                    onChange={(newValue) => {
-                                    setDateInf(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField {...params} className={classes.dt}/>}
-                                />
+                            <DateTimeSelect value={dateFrom} label='Data Inicial' handleChange={(date) => setDateFrom(date)}/>
+                            <DateTimeSelect value={dateTill} label='Data Final' handleChange={(date) => setDateTill(date)}/>
 
-                                <DatePicker
-                                    label="Data Final"
-                                    className={classes.dt}
-                                    value={dateSup}
-                                    onChange={(newValue) => {
-                                    setDateSup(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField {...params} className={classes.dt}/>}
-                                />
-                            </LocalizationProvider>
-
-                            <Button className={classes.bt} variant='contained' color='primary' onClick={getHosts}>
+                            <Button className={classes.bt} variant='contained' color='primary' onClick={generateReport}>
                                 Gerar Relatório
                             </Button>
     
@@ -199,11 +176,9 @@ export default function MainScreen() {
 
                 <Grid item container xs={7}>
                     <div className={classes.data} id='pdfArea'>
-{/*                         {
-                            allHosts.map(host => 
-                                <p key={host.hostid}>{host.hostid} - {host.host} - {proxyName[host.proxy_hostid]}</p>    
-                            )
-                        } */}
+                        {
+                            reportData.map((report) => <p>{String(report)}</p>)
+                        }
                     </div>
                 </Grid>
             </Grid>

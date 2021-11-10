@@ -63,18 +63,27 @@ generateReportRoute.get('/history', async (req, res) => {
 
     let hostGetParams = {
         output: 'extend',
+        sortfield: 'clock',
+/*         hostids,
+        time_from,
+        time_till, */
+        limit: 10
     }
+
+    const reqType = 'history.get'
 
     try {
         const zabbix = Zabbix()
 
         await zabbix.login()
 
-        const host = await zabbix.request(reqType, hostGetParams)
+        const history = await zabbix.request(reqType, hostGetParams)
+
+        console.log(history)
 
         await zabbix.logout()
 
-        res.send(host)
+        res.json(history)
     } catch(error) {
         console.log(error)
         res.json({
