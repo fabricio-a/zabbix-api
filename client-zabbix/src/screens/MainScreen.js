@@ -47,7 +47,7 @@ const useStyle = makeStyles({
         flexDirection: 'column',
         justifyContent: 'space-around',
         alignItems: 'start',
-        height: '350px',
+        height: '450px',
         backgroundColor: '#fff',
         padding: '20px',
         borderRadius: '5px'
@@ -68,6 +68,8 @@ export default function MainScreen() {
     const [hostSelect, setHostSelect] = React.useState([])
     const [hostGroupSelect, setHostGroupSelect] = React.useState([])
     const [reportData, setReportData] = React.useState([])
+    const [allGraphs, setAllGraphs] = React.useState([])
+    const [graphsSelect, setGraphsSelect] = React.useState([])
 
     const getPDF = () => {
         const input = document.getElementById('pdfArea')
@@ -102,8 +104,20 @@ export default function MainScreen() {
         fetch('http://172.16.10.65:4444/generate-report/grouphosts')
             .then(res => res.json())
             .then(grouphosts => {
-                console.log(grouphosts)
+                //console.log(grouphosts)
                 setHostGroup(grouphosts)
+            })
+    }
+
+    const getGraphs = () => {
+        const url = 'http://172.16.10.65:4444/generate-report/graphs?hostids=['+hostSelect.toString()+']'
+
+        fetch(url)
+            .then(res => res.json())
+            .then(items => {
+                console.log('I get the items bitch')
+                console.log(items)
+                setAllGraphs(items)
             })
     }
 
@@ -119,11 +133,17 @@ export default function MainScreen() {
     React.useEffect(() => {
         getHosts()
         getGroupHosts()
+        getGraphs()
     }, [])
 
     React.useEffect(() => {
         getHosts()
+        getGraphs()
     }, [hostGroupSelect])
+
+    React.useEffect(() => {
+        getGraphs()
+    }, [hostSelect])
 
     return (
         <div className={classes.root}>
@@ -158,6 +178,14 @@ export default function MainScreen() {
                                 data={allHosts.map(host =>{ return {value: host.hostid, label: host.host} })}
                                 selectValue={hostSelect}
                                 selectHandler={(e) => setHostSelect(e.target.value)}    
+                            />
+
+                            <MySelect 
+                                id='items-select'
+                                label='Gráficos'
+                                data={allGraphs.map(item =>{ return {value: item.itemid, label: item.name} })}
+                                selectValue={graphsSelect}
+                                selectHandler={(e) => setGraphsSelect(e.target.value)}    
                             />
 
                             <DateTimeSelect value={dateFrom} label='Data Inicial' handleChange={(date) => setDateFrom(date)}/>

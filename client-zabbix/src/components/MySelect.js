@@ -23,6 +23,7 @@ export default function MySelect(props) {
         selectValue,
         selectHandler
      } = props
+     
     return(
 
         <FormControl className={classes.formControl}>
@@ -40,7 +41,7 @@ export default function MySelect(props) {
                     Todos
                 </MenuItem>
                 {
-                    data.map(element => <MenuItem value={element.value}>{element.label}</MenuItem>)
+                    data.map(element => <MenuItem key={element.value} value={element.value}>{element.label}</MenuItem>)
                 }
             </Select>
         </FormControl>

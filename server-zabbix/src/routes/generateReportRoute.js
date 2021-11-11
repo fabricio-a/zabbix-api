@@ -3,65 +3,66 @@ import Zabbix from '../zabbix/zabbixConnect'
 
 const generateReportRoute = Router()
 
-generateReportRoute.get('/hosts', async (req, res) => {
+async function getDataFromZabbix(res, reqType, hostGetParams) {
+    try {
+        const zabbix = Zabbix()
+
+        await zabbix.login()
+
+        const host = await zabbix.request(reqType, hostGetParams)
+
+        await zabbix.logout()
+
+        res.send(host)
+
+    } catch(error) {
+        console.log(error)
+        res.json({
+            error: 'An error occured!'
+        })
+
+    }
+}
+
+generateReportRoute.get('/hosts', (req, res) => {
     const groupids = req.query.groupids
 
-    const reqType = 'host.get'
     let hostGetParams = {
         output: 'extend',
         groupids
     }
 
-    try {
-        const zabbix = Zabbix()
-
-        await zabbix.login()
-
-        const host = await zabbix.request(reqType, hostGetParams)
-
-        await zabbix.logout()
-
-        res.send(host)
-    } catch(error) {
-        console.log(error)
-        res.json({
-            error: 'An error occured!'
-        })
-    }
+    getDataFromZabbix(res, 'host.get', hostGetParams)
 })
 
-generateReportRoute.get('/grouphosts', async (req, res) => {
-    const reqType = 'hostgroup.get'
-    let hostGetParams = {
+generateReportRoute.get('/grouphosts', (req, res) =>  getDataFromZabbix(res, 'hostgroup.get', {
+    output: 'extend'
+}))
+
+generateReportRoute.get('/graphs', (req, res) =>  {
+    const {
+        hostids
+    } = req.query
+    
+    const graphsGetParams = {
         output: 'extend',
+        hostids: [10465,10466],
+        sortfield: 'name'
     }
 
-    try {
-        const zabbix = Zabbix()
+    console.log(graphsGetParams)
 
-        await zabbix.login()
-
-        const host = await zabbix.request(reqType, hostGetParams)
-
-        await zabbix.logout()
-
-        res.send(host)
-    } catch(error) {
-        console.log(error)
-        res.json({
-            error: 'An error occured!'
-        })
-    }
+    getDataFromZabbix(res, 'graph.get', graphsGetParams)
 })
 
-generateReportRoute.get('/history', async (req, res) => {
+generateReportRoute.get('/history', (req, res) => {
     const {
         hostids,
         time_from,
         time_till
     } = req.query
 
-    let hostGetParams = {
+    let historyGetParams = {
         output: 'extend',
         sortfield: 'clock',
 /*         hostids,
@@ -70,26 +71,7 @@ generateReportRoute.get('/history', async (req, res) => {
         limit: 10
     }
 
-    const reqType = 'history.get'
-
-    try {
-        const zabbix = Zabbix()
-
-        await zabbix.login()
-
-        const history = await zabbix.request(reqType, hostGetParams)
-
-        console.log(history)
-
-        await zabbix.logout()
-
-        res.json(history)
-    } catch(error) {
-        console.log(error)
-        res.json({
-            error: 'An error occured!'
-        })
-    }
+    getDataFromZabbix(res, 'history.get', historyGetParams)
 })
 
 export default generateReportRoute
