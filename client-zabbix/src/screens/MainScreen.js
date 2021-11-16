@@ -95,7 +95,6 @@ export default function MainScreen() {
         fetch('http://172.16.10.65:4444/generate-report/hosts?groupids='+hostGroupSelect.toString())
             .then(res => res.json())
             .then(hosts => {
-                console.log(hosts)
                 setHosts(hosts)
             })
     }
@@ -104,27 +103,26 @@ export default function MainScreen() {
         fetch('http://172.16.10.65:4444/generate-report/grouphosts')
             .then(res => res.json())
             .then(grouphosts => {
-                //console.log(grouphosts)
                 setHostGroup(grouphosts)
             })
     }
 
     const getGraphs = () => {
-        const url = 'http://172.16.10.65:4444/generate-report/graphs?hostids=['+hostSelect.toString()+']'
+        const url = 'http://172.16.10.65:4444/generate-report/graphs?hostids='+hostSelect
 
         fetch(url)
             .then(res => res.json())
-            .then(items => {
-                console.log('I get the items bitch')
-                console.log(items)
-                setAllGraphs(items)
+            .then(graph => {
+                setAllGraphs(graph)
             })
     }
 
     const generateReport = () => {
+        console.log('I request the history bitch')
         report
             .getHistory(hostSelect, dateFrom.getTime(), dateTill.getTime())
             .then((dados) => {
+                console.log('I got the history bitch')
                 console.log(dados)
                 setReportData(dados)
             })
@@ -205,7 +203,7 @@ export default function MainScreen() {
                 <Grid item container xs={7}>
                     <div className={classes.data} id='pdfArea'>
                         {
-                            reportData.map((report) => <p>{String(report)}</p>)
+                            reportData.map((report) => <p>{report}</p>)
                         }
                     </div>
                 </Grid>

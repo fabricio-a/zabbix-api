@@ -24,13 +24,9 @@ export default function Zabbix() {
     }
 
     const request = async (method, params = {}) => {
-        console.log(method, params)
-
         let response = await post(method, params)
             .then(res => res.data.result)
             .catch(err => err.error)
-
-        console.log(response)
 
         return response
     }

@@ -9,11 +9,11 @@ async function getDataFromZabbix(res, reqType, hostGetParams) {
 
         await zabbix.login()
 
-        const host = await zabbix.request(reqType, hostGetParams)
+        const response = await zabbix.request(reqType, hostGetParams)
 
         await zabbix.logout()
 
-        res.send(host)
+        res.send(response)
 
     } catch(error) {
         console.log(error)
@@ -25,7 +25,11 @@ async function getDataFromZabbix(res, reqType, hostGetParams) {
 }
 
 generateReportRoute.get('/hosts', (req, res) => {
-    const groupids = req.query.groupids
+    let {
+        groupids
+    }  = req.query
+
+    groupids = groupids.split(',').map(host => parseInt(host))
 
     let hostGetParams = {
         output: 'extend',
@@ -40,36 +44,41 @@ generateReportRoute.get('/grouphosts', (req, res) =>  getDataFromZabbix(res, 'ho
 }))
 
 generateReportRoute.get('/graphs', (req, res) =>  {
-    const {
+    let {
         hostids
     } = req.query
+
+    hostids = hostids.split(',').map(host => parseInt(host))
     
     const graphsGetParams = {
         output: 'extend',
-        hostids: [10465,10466],
+        hostids,
         sortfield: 'name'
     }
-
-    console.log(graphsGetParams)
 
     getDataFromZabbix(res, 'graph.get', graphsGetParams)
 })
 
 generateReportRoute.get('/history', (req, res) => {
-    const {
+    let {
         hostids,
-        time_from,
-        time_till
+/*         time_from,
+        time_till */
     } = req.query
 
+    hostids = hostids.split(',').map(host => parseInt(host))
+
     let historyGetParams = {
+        history: 0,
         output: 'extend',
         sortfield: 'clock',
-/*         hostids,
-        time_from,
-        time_till, */
-        limit: 10
+        hostids,
+/*         time_from,
+        time_till,
+        limit: 10 */
     }
+
+    console.log(historyGetParams)
 
     getDataFromZabbix(res, 'history.get', historyGetParams)
 })
