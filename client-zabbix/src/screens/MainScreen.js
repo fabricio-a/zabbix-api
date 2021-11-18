@@ -24,7 +24,7 @@ const useStyle = makeStyles({
 
     data: {
         boxSizing: 'border-box',
-        backgroundColor: 'white',
+        backgroundColor: '#181818',
         color: 'black',
         width: '100%',
         height: '95vh',
@@ -117,15 +117,23 @@ export default function MainScreen() {
             })
     }
 
+    const addGraph = dados => {
+        console.log('mais um')
+        console.log(dados)
+    }
+
     const generateReport = () => {
-        console.log('I request the history bitch')
-        report
-            .getHistory(hostSelect, dateFrom.getTime(), dateTill.getTime())
-            .then((dados) => {
-                console.log('I got the history bitch')
-                console.log(dados)
-                setReportData(dados)
-            })
+        graphsSelect.forEach(graph => {
+            report
+                .getHistory(
+                    Math.trunc(dateFrom.getTime()/1000), 
+                    Math.trunc(dateTill.getTime()/1000),
+                    graph
+                )
+                .then((dados) => {
+                    addGraph(dados)
+                })
+        })
     }
 
     React.useEffect(() => {
@@ -163,7 +171,7 @@ export default function MainScreen() {
                     <Grid item>
                         <div className={classes.form}>
                             <MySelect 
-                                id='host-select'
+                                id='hostgroup-select'
                                 label='Grupos de Hosts'
                                 data={allHostGroup.map(group =>{ return {value: group.groupid, label: group.name} })}
                                 selectValue={hostGroupSelect}
@@ -179,11 +187,11 @@ export default function MainScreen() {
                             />
 
                             <MySelect 
-                                id='items-select'
+                                id='graphs-select'
                                 label='Gráficos'
-                                data={allGraphs.map(item =>{ return {value: item.itemid, label: item.name} })}
+                                data={allGraphs.map(graph =>{ return {value: graph.graphid, label: graph.name} })}
                                 selectValue={graphsSelect}
-                                selectHandler={(e) => setGraphsSelect(e.target.value)}    
+                                selectHandler={(e) => setGraphsSelect(e.target.value)} 
                             />
 
                             <DateTimeSelect value={dateFrom} label='Data Inicial' handleChange={(date) => setDateFrom(date)}/>
@@ -202,9 +210,9 @@ export default function MainScreen() {
 
                 <Grid item container xs={7}>
                     <div className={classes.data} id='pdfArea'>
-                        {
+{/*                         {
                             reportData.map((report) => <p>{report}</p>)
-                        }
+                        } */}
                     </div>
                 </Grid>
             </Grid>

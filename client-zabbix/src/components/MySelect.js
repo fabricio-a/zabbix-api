@@ -1,4 +1,4 @@
-import { Select, MenuItem, InputLabel, FormControl } from '@mui/material'
+import { Select, MenuItem, InputLabel, FormControl, Checkbox } from '@mui/material'
 import { makeStyles } from '@material-ui/styles'
 import React from 'react'
 
@@ -25,13 +25,13 @@ export default function MySelect(props) {
      } = props
      
     return(
-
         <FormControl className={classes.formControl}>
             <InputLabel id={id}>{label}</InputLabel>
             <Select
                 label={label}
                 labelId={id}
                 id={id+'-select'}
+                key={id+'-select'}
                 value={selectValue}
                 onChange={selectHandler}
                 multiple
@@ -41,7 +41,7 @@ export default function MySelect(props) {
                     Todos
                 </MenuItem>
                 {
-                    data.map(element => <MenuItem key={element.value} value={element.value}>{element.label}</MenuItem>)
+                    data.map(element => <MenuItem key={element.value} value={element.value}><Checkbox checked={selectValue.includes(element.value)}/>{element.label}</MenuItem>)
                 }
             </Select>
         </FormControl>
