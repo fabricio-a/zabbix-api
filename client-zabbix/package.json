@@ -6,6 +6,7 @@
     "@emotion/core": "^11.0.0",
     "@emotion/styled": "^11.3.0",
     "@material-ui/icons": "^4.11.2",
+    "@mui/icons-material": "^5.1.1",
     "@mui/lab": "^5.0.0-alpha.54",
     "@mui/material": "^5.0.4",
     "@testing-library/jest-dom": "^5.14.1",
@@ -16,6 +17,7 @@
     "jspdf": "^2.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-draggable": "^4.4.4",
     "react-scripts": "4.0.3",
     "recharts": "^2.1.6",
     "web-vitals": "^1.1.2"

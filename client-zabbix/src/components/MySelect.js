@@ -21,7 +21,9 @@ export default function MySelect(props) {
         label,
         data,
         selectValue,
-        selectHandler
+        selectHandler,
+        multiple,
+        check
      } = props
      
     return(
@@ -34,14 +36,14 @@ export default function MySelect(props) {
                 key={id+'-select'}
                 value={selectValue}
                 onChange={selectHandler}
-                multiple
+                multiple={multiple}
                 className={classes.select}
             >
                 <MenuItem value="-1">
                     Todos
                 </MenuItem>
                 {
-                    data.map(element => <MenuItem key={element.value} value={element.value}><Checkbox checked={selectValue.includes(element.value)}/>{element.label}</MenuItem>)
+                    data.map(element => <MenuItem key={element.value} value={element.value}>{check ? <Checkbox checked={selectValue.includes(element.value)}/> : <></>} {element.label}</MenuItem>)
                 }
             </Select>
         </FormControl>

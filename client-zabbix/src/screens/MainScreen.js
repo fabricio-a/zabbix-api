@@ -4,6 +4,11 @@ import logo from '../assets/logo-roost.png'
 import { makeStyles } from '@material-ui/styles'
 import MySelect from '../components/MySelect'
 import DateTimeSelect from '../components/DateTimeSelect'
+import Draggable, {DraggableCore} from 'react-draggable'
+import TocIcon from '@mui/icons-material/Toc'
+import InsertChartIcon from '@mui/icons-material/InsertChart'
+import TextFieldsIcon from '@mui/icons-material/TextFields'
+import IconButton from '@mui/material/IconButton'
 
 import Report from './report'
 
@@ -24,7 +29,7 @@ const useStyle = makeStyles({
 
     data: {
         boxSizing: 'border-box',
-        backgroundColor: '#181818',
+        backgroundColor: '#fff',
         color: 'black',
         width: '100%',
         height: '95vh',
@@ -118,8 +123,9 @@ export default function MainScreen() {
     }
 
     const addGraph = dados => {
-        console.log('mais um')
         console.log(dados)
+
+        setReportData([ ...reportData, <div>Dados vieram...</div>])
     }
 
     const generateReport = () => {
@@ -130,9 +136,7 @@ export default function MainScreen() {
                     Math.trunc(dateTill.getTime()/1000),
                     graph
                 )
-                .then((dados) => {
-                    addGraph(dados)
-                })
+                .then(dados => addGraph(dados))
         })
     }
 
@@ -173,6 +177,7 @@ export default function MainScreen() {
                             <MySelect 
                                 id='hostgroup-select'
                                 label='Grupos de Hosts'
+                                multiple={true} check={true}
                                 data={allHostGroup.map(group =>{ return {value: group.groupid, label: group.name} })}
                                 selectValue={hostGroupSelect}
                                 selectHandler={(e) => setHostGroupSelect(e.target.value)}    
@@ -181,6 +186,7 @@ export default function MainScreen() {
                             <MySelect 
                                 id='host-select'
                                 label='Hosts'
+                                multiple={false} check={false}
                                 data={allHosts.map(host =>{ return {value: host.hostid, label: host.host} })}
                                 selectValue={hostSelect}
                                 selectHandler={(e) => setHostSelect(e.target.value)}    
@@ -188,7 +194,8 @@ export default function MainScreen() {
 
                             <MySelect 
                                 id='graphs-select'
-                                label='Gráficos'
+                                label='Fonte de Dados'
+                                multiple={false} check={false}
                                 data={allGraphs.map(graph =>{ return {value: graph.graphid, label: graph.name} })}
                                 selectValue={graphsSelect}
                                 selectHandler={(e) => setGraphsSelect(e.target.value)} 
@@ -210,9 +217,26 @@ export default function MainScreen() {
 
                 <Grid item container xs={7}>
                     <div className={classes.data} id='pdfArea'>
-{/*                         {
-                            reportData.map((report) => <p>{report}</p>)
-                        } */}
+                        <div>
+                            <IconButton>
+                                <TextFieldsIcon />
+                            </IconButton>
+                            <IconButton>
+                                <InsertChartIcon />
+                            </IconButton>
+                            <IconButton>
+                                <TocIcon />
+                            </IconButton>
+                        </div>
+                        {reportData.map(reportElement =>
+                        <Draggable
+                            handle='.handle'
+                        >
+                            <div>
+                                <div className='handle'>Clique aqui pra arrastar...</div>
+                                {reportElement}
+                            </div>
+                        </Draggable>)}
                     </div>
                 </Grid>
             </Grid>

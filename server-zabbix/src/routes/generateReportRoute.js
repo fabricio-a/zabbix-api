@@ -74,9 +74,11 @@ generateReportRoute.get('/history', (req, res) => {
 
     graphids = graphids.split(',').map(graph => parseInt(graph))
 
+    let allItems = []
+
     getDataFromZabbix('item.get', { output: 'extend', graphids })
-        .then(itemids => {
-            itemids = itemids.map(item => parseInt(item.itemid))
+        .then(items => {
+            const itemids = items.map(item => parseInt(item.itemid))
 
             let historyGetParams = {
                 output: 'extend',
@@ -86,9 +88,13 @@ generateReportRoute.get('/history', (req, res) => {
                 time_till
             }
 
+            allItems = items
+
             return getDataFromZabbix('history.get', historyGetParams)
         })
-        .then(response => {console.log(response);res.send(response)})
+        .then(response => {
+            res.send({ response, allItems })
+        })
         .catch(error => res.send(error))
 })
 
