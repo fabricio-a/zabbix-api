@@ -4,11 +4,14 @@ import logo from '../assets/logo-roost.png'
 import { makeStyles } from '@material-ui/styles'
 import MySelect from '../components/MySelect'
 import DateTimeSelect from '../components/DateTimeSelect'
-import Draggable, {DraggableCore} from 'react-draggable'
+import DraggableItem from '../components/DraggableItem'
 import TocIcon from '@mui/icons-material/Toc'
 import InsertChartIcon from '@mui/icons-material/InsertChart'
 import TextFieldsIcon from '@mui/icons-material/TextFields'
 import IconButton from '@mui/material/IconButton'
+import TextField from '@mui/material/TextField'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 
 import Report from './report'
 
@@ -75,6 +78,61 @@ export default function MainScreen() {
     const [reportData, setReportData] = React.useState([])
     const [allGraphs, setAllGraphs] = React.useState([])
     const [graphsSelect, setGraphsSelect] = React.useState([])
+    const [anchorEl, setAnchorEl] = React.useState(null)
+
+    const open = Boolean(anchorEl)
+
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    }
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    }
+
+    const DataMenu = () => {
+        return (
+            <div className={classes.form}>
+            <MySelect 
+                id='hostgroup-select'
+                label='Grupos de Hosts'
+                multiple={true} check={true}
+                data={allHostGroup.map(group =>{ return {value: group.groupid, label: group.name} })}
+                selectValue={hostGroupSelect}
+                selectHandler={(e) => setHostGroupSelect(e.target.value)}    
+            />
+    
+            <MySelect 
+                id='host-select'
+                label='Hosts'
+                multiple={false} check={false}
+                data={allHosts.map(host =>{ return {value: host.hostid, label: host.host} })}
+                selectValue={hostSelect}
+                selectHandler={(e) => setHostSelect(e.target.value)}    
+            />
+    
+            <MySelect 
+                id='graphs-select'
+                label='Fonte de Dados'
+                multiple={false} check={false}
+                data={allGraphs.map(graph =>{ return {value: graph.graphid, label: graph.name} })}
+                selectValue={graphsSelect}
+                selectHandler={(e) => setGraphsSelect(e.target.value)} 
+            />
+    
+            <DateTimeSelect value={dateFrom} label='Data Inicial' handleChange={(date) => setDateFrom(date)}/>
+            <DateTimeSelect value={dateTill} label='Data Final' handleChange={(date) => setDateTill(date)}/>
+    
+            <Button className={classes.bt} variant='contained' color='primary' onClick={generateReport}>
+                Buscar Dados
+            </Button>
+    
+    {/*                             <Button className={classes.bt} variant='contained' color='primary' onClick={getPDF}>
+                Gerar PDF
+            </Button> */}
+        </div>
+        )
+    }
 
     const getPDF = () => {
         const input = document.getElementById('pdfArea')
@@ -129,15 +187,13 @@ export default function MainScreen() {
     }
 
     const generateReport = () => {
-        graphsSelect.forEach(graph => {
             report
                 .getHistory(
                     Math.trunc(dateFrom.getTime()/1000), 
                     Math.trunc(dateTill.getTime()/1000),
-                    graph
+                    graphsSelect
                 )
                 .then(dados => addGraph(dados))
-        })
     }
 
     React.useEffect(() => {
@@ -171,72 +227,54 @@ export default function MainScreen() {
                             <img src={logo} className={classes.logo}></img>
                         </div>
                     </Grid>
-
-                    <Grid item>
-                        <div className={classes.form}>
-                            <MySelect 
-                                id='hostgroup-select'
-                                label='Grupos de Hosts'
-                                multiple={true} check={true}
-                                data={allHostGroup.map(group =>{ return {value: group.groupid, label: group.name} })}
-                                selectValue={hostGroupSelect}
-                                selectHandler={(e) => setHostGroupSelect(e.target.value)}    
-                            />
-
-                            <MySelect 
-                                id='host-select'
-                                label='Hosts'
-                                multiple={false} check={false}
-                                data={allHosts.map(host =>{ return {value: host.hostid, label: host.host} })}
-                                selectValue={hostSelect}
-                                selectHandler={(e) => setHostSelect(e.target.value)}    
-                            />
-
-                            <MySelect 
-                                id='graphs-select'
-                                label='Fonte de Dados'
-                                multiple={false} check={false}
-                                data={allGraphs.map(graph =>{ return {value: graph.graphid, label: graph.name} })}
-                                selectValue={graphsSelect}
-                                selectHandler={(e) => setGraphsSelect(e.target.value)} 
-                            />
-
-                            <DateTimeSelect value={dateFrom} label='Data Inicial' handleChange={(date) => setDateFrom(date)}/>
-                            <DateTimeSelect value={dateTill} label='Data Final' handleChange={(date) => setDateTill(date)}/>
-
-                            <Button className={classes.bt} variant='contained' color='primary' onClick={generateReport}>
-                                Gerar Relatório
-                            </Button>
-    
-                            <Button className={classes.bt} variant='contained' color='primary' onClick={getPDF}>
-                                Gerar PDF
-                            </Button>
-                        </div>
-                    </Grid>
                 </Grid>
 
                 <Grid item container xs={7}>
                     <div className={classes.data} id='pdfArea'>
                         <div>
-                            <IconButton>
+                            <IconButton
+                                id="basic-button"
+                                aria-controls="basic-menu"
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}
+                            >
                                 <TextFieldsIcon />
                             </IconButton>
-                            <IconButton>
+                            <Menu
+                                id="basic-menu"
+                                anchorEl={anchorEl}
+                                open={open}
+                                onClose={handleClose}
+                                MenuListProps={{
+                                    'aria-labelledby': 'basic-button',
+                                }}
+                            >
+                                <MenuItem><DataMenu /></MenuItem>
+                            </Menu>
+                            <IconButton
+                                id="basic-button"
+                                aria-controls="basic-menu"
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}>
                                 <InsertChartIcon />
                             </IconButton>
-                            <IconButton>
+                            <IconButton
+                                id="basic-button"
+                                aria-controls="basic-menu"
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}>
                                 <TocIcon />
                             </IconButton>
                         </div>
+
                         {reportData.map(reportElement =>
-                        <Draggable
-                            handle='.handle'
-                        >
-                            <div>
-                                <div className='handle'>Clique aqui pra arrastar...</div>
+                            <DraggableItem label='clique aqui...'>
                                 {reportElement}
-                            </div>
-                        </Draggable>)}
+                            </DraggableItem>
+                        )}
                     </div>
                 </Grid>
             </Grid>
