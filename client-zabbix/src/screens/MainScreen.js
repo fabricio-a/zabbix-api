@@ -11,7 +11,6 @@ import TextFieldsIcon from '@mui/icons-material/TextFields'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 
 import Report from './report'
 
@@ -60,6 +59,17 @@ const useStyle = makeStyles({
         padding: '20px',
         borderRadius: '5px'
     }, 
+
+    menuText: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        alignItems: 'start',
+        height: '200px',
+        backgroundColor: '#fff',
+        padding: '20px',
+        borderRadius: '5px'
+    },
     
     bt: {
         width: '240px'
@@ -75,19 +85,47 @@ export default function MainScreen() {
     const [dateTill, setDateTill] = React.useState(new Date())
     const [hostSelect, setHostSelect] = React.useState([])
     const [hostGroupSelect, setHostGroupSelect] = React.useState([])
+    const [textSizeSelect, setTextSizeSelect] = React.useState([])
     const [reportData, setReportData] = React.useState([])
     const [allGraphs, setAllGraphs] = React.useState([])
     const [graphsSelect, setGraphsSelect] = React.useState([])
-    const [anchorEl, setAnchorEl] = React.useState(null)
+    const [textInput, setTextInput] = React.useState([])
+    const [opDrop, setOpDrop] = React.useState([null, null])
 
-    const open = Boolean(anchorEl)
+    const open = Boolean(opDrop[0])
 
-    const handleClick = (event) => {
-      setAnchorEl(event.currentTarget);
-    }
+    const TextMenu = () => {
+        return (
+            <div className={classes.menuText}>
+                <MySelect 
+                id='textSize-select'
+                label='Tamanho do texto'
+                multiple={false} check={false}
+                data={[
+                    { value: 'h1', label: 'h1'},
+                    { value: 'h2', label: 'h2'},
+                    { value: 'h3', label: 'h2'},
+                    { value: 'h4', label: 'h4'}
+                ]}
+                selectValue={textSizeSelect}
+                selectHandler={(e) => setTextSizeSelect(e.target.value)} />
 
-    const handleClose = () => {
-      setAnchorEl(null);
+                <TextField 
+                    value={textInput}
+                    onChange={e => setTextInput(e.target.value)}
+                />
+
+                <Button className={classes.bt} variant='contained' color='primary' 
+                    onClick={() => {
+                        let element = document.createElement(textSizeSelect)
+                        element.innerHTML = textInput
+
+                        setReportData([ ...reportData, element])
+                    }}>
+                    Adicionar Texto
+                </Button>
+        </div>
+        )
     }
 
     const DataMenu = () => {
@@ -237,27 +275,16 @@ export default function MainScreen() {
                                 aria-controls="basic-menu"
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
-                                onClick={handleClick}
+                                onClick={(e) => setOpDrop([e.currentTarget, 'textfieldicon'])}
                             >
                                 <TextFieldsIcon />
                             </IconButton>
-                            <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
-                                MenuListProps={{
-                                    'aria-labelledby': 'basic-button',
-                                }}
-                            >
-                                <MenuItem><DataMenu /></MenuItem>
-                            </Menu>
                             <IconButton
                                 id="basic-button"
                                 aria-controls="basic-menu"
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
-                                onClick={handleClick}>
+                                onClick={(e) => setOpDrop([e.currentTarget, 'insertcharticon'])}>
                                 <InsertChartIcon />
                             </IconButton>
                             <IconButton
@@ -265,9 +292,20 @@ export default function MainScreen() {
                                 aria-controls="basic-menu"
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
-                                onClick={handleClick}>
+                                onClick={(e) => setOpDrop([e.currentTarget, 'tocicon'])}>
                                 <TocIcon />
                             </IconButton>
+                            <Menu
+                                id="basic-menu"
+                                anchorEl={opDrop[0]}
+                                open={open}
+                                onClose={() => setOpDrop([null, null])}
+                                MenuListProps={{
+                                    'aria-labelledby': 'basic-button',
+                                }}
+                            >
+                                {opDrop[1] === 'textfieldicon' ? <TextMenu/> : <DataMenu/>}
+                            </Menu>
                         </div>
 
                         {reportData.map(reportElement =>
