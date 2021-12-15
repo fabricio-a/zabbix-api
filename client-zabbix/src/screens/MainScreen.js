@@ -1,84 +1,33 @@
 import * as React from 'react'
 import { Button, Grid }  from '@mui/material'
 import logo from '../assets/logo-roost.png'
-import { makeStyles } from '@material-ui/styles'
 import MySelect from '../components/MySelect'
 import DateTimeSelect from '../components/DateTimeSelect'
 import DraggableItem from '../components/DraggableItem'
 import TocIcon from '@mui/icons-material/Toc'
+import TextField from '@mui/material/TextField'
+import Dialog from '@mui/material/Dialog'
+import SimpleChart from '../components/SimpleChart'
+
+import AcUnitIcon from '@mui/icons-material/AcUnit'
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm'
 import InsertChartIcon from '@mui/icons-material/InsertChart'
 import TextFieldsIcon from '@mui/icons-material/TextFields'
 import IconButton from '@mui/material/IconButton'
-import TextField from '@mui/material/TextField'
-import Menu from '@mui/material/Menu'
+import SaveIcon from '@mui/icons-material/Save'
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import RefreshIcon from '@mui/icons-material/Refresh'
+import SettingsIcon from '@mui/icons-material/Settings'
 
 import Report from './report'
+import './MainScreen.css'
 
 import html2canva from 'html2canvas'
 import jsPDF from 'jspdf'
 
 const report = Report()
 
-const useStyle = makeStyles({
-    root: {
-        color: '#fff',
-    },
-
-    logo: {
-        height: '20px',
-        margin: '10px'
-    },
-
-    data: {
-        boxSizing: 'border-box',
-        backgroundColor: '#fff',
-        color: 'black',
-        width: '100%',
-        height: '95vh',
-        padding: '10px',
-        margin: '10px',
-        boder: 'solid 1px white',
-        borderRadius: '5px',
-        overflowY: 'scroll'
-    },
-
-    menu: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center'
-    },
-
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-around',
-        alignItems: 'start',
-        height: '450px',
-        backgroundColor: '#fff',
-        padding: '20px',
-        borderRadius: '5px'
-    }, 
-
-    menuText: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-around',
-        alignItems: 'start',
-        height: '200px',
-        backgroundColor: '#fff',
-        padding: '20px',
-        borderRadius: '5px'
-    },
-    
-    bt: {
-        width: '240px'
-    }
-})
-
 export default function MainScreen() {
-    const classes = useStyle()
-
     const [allHosts, setHosts] = React.useState([])
     const [allHostGroup, setHostGroup] = React.useState([])
     const [dateFrom, setDateFrom] = React.useState(new Date())
@@ -90,37 +39,34 @@ export default function MainScreen() {
     const [allGraphs, setAllGraphs] = React.useState([])
     const [graphsSelect, setGraphsSelect] = React.useState([])
     const [textInput, setTextInput] = React.useState([])
-    const [opDrop, setOpDrop] = React.useState([null, null])
-
-    const open = Boolean(opDrop[0])
+    const [openModal, setOpenModal] = React.useState(false)
+    const [modalItem, setModalItem] = React.useState('')
 
     const TextMenu = () => {
         return (
-            <div className={classes.menuText}>
+            <div className='menuText'>
                 <MySelect 
-                id='textSize-select'
-                label='Tamanho do texto'
-                multiple={false} check={false}
-                data={[
-                    { value: 'h1', label: 'h1'},
-                    { value: 'h2', label: 'h2'},
-                    { value: 'h3', label: 'h2'},
-                    { value: 'h4', label: 'h4'}
-                ]}
-                selectValue={textSizeSelect}
-                selectHandler={(e) => setTextSizeSelect(e.target.value)} />
+                    id='textSize-select'
+                    label='Tamanho do texto'
+                    multiple={false} check={false}
+                    data={[
+                        { value: 'h1', label: 'h1'},
+                        { value: 'h2', label: 'h2'},
+                        { value: 'h3', label: 'h2'},
+                        { value: 'h4', label: 'h4'}
+                    ]}
+                    selectValue={textSizeSelect}
+                    selectHandler={(e) => setTextSizeSelect(e.target.value)} 
+                />
 
                 <TextField 
                     value={textInput}
                     onChange={e => setTextInput(e.target.value)}
                 />
 
-                <Button className={classes.bt} variant='contained' color='primary' 
+                <Button className='bt' variant='contained' color='primary' 
                     onClick={() => {
-                        let element = document.createElement(textSizeSelect)
-                        element.innerHTML = textInput
-
-                        setReportData([ ...reportData, element])
+                        setReportData([ ...reportData, {label: 'Arraste...', value: textInput}])
                     }}>
                     Adicionar Texto
                 </Button>
@@ -130,7 +76,7 @@ export default function MainScreen() {
 
     const DataMenu = () => {
         return (
-            <div className={classes.form}>
+            <div className='form'>
             <MySelect 
                 id='hostgroup-select'
                 label='Grupos de Hosts'
@@ -161,11 +107,11 @@ export default function MainScreen() {
             <DateTimeSelect value={dateFrom} label='Data Inicial' handleChange={(date) => setDateFrom(date)}/>
             <DateTimeSelect value={dateTill} label='Data Final' handleChange={(date) => setDateTill(date)}/>
     
-            <Button className={classes.bt} variant='contained' color='primary' onClick={generateReport}>
+            <Button className='bt' variant='contained' color='primary' onClick={generateReport}>
                 Buscar Dados
             </Button>
     
-    {/*                             <Button className={classes.bt} variant='contained' color='primary' onClick={getPDF}>
+    {/*                             <Button className='bt' variant='contained' color='primary' onClick={getPDF}>
                 Gerar PDF
             </Button> */}
         </div>
@@ -250,72 +196,66 @@ export default function MainScreen() {
     }, [hostSelect])
 
     return (
-        <div className={classes.root}>
-            <Grid 
-                container 
-                spacing={2}
-                direction='row'
-                justifyContent='center'
-                alignItems='stretch'
-            >
-                <Grid item container spacing={3} xs={5} direction='column' alignItems='center' justifyContent='center'>
-                    <Grid item>
-                        <div className={classes.menu}>
-                            <h2>Report Generator</h2>
-                            <img src={logo} className={classes.logo}></img>
-                        </div>
-                    </Grid>
-                </Grid>
+        <div className='root'>
+            <header>
+                <div className='title'>
+                    <h2>Report Generator</h2>
+                    <img src={logo} className='logo'></img>
+                </div>
+                <div>
+                    <IconButton>
+                        <SettingsIcon color='primary'/>
+                    </IconButton>
+                    <IconButton>
+                        <SaveIcon color='primary'/>
+                    </IconButton>
+                    <IconButton>
+                        <PictureAsPdfIcon color='primary'/>
+                    </IconButton>
+                    <IconButton>
+                        <RefreshIcon color='primary'/>
+                    </IconButton>
+                </div>
+            </header>
 
-                <Grid item container xs={7}>
-                    <div className={classes.data} id='pdfArea'>
-                        <div>
-                            <IconButton
-                                id="basic-button"
-                                aria-controls="basic-menu"
-                                aria-haspopup="true"
-                                aria-expanded={open ? 'true' : undefined}
-                                onClick={(e) => setOpDrop([e.currentTarget, 'textfieldicon'])}
-                            >
-                                <TextFieldsIcon />
-                            </IconButton>
-                            <IconButton
-                                id="basic-button"
-                                aria-controls="basic-menu"
-                                aria-haspopup="true"
-                                aria-expanded={open ? 'true' : undefined}
-                                onClick={(e) => setOpDrop([e.currentTarget, 'insertcharticon'])}>
-                                <InsertChartIcon />
-                            </IconButton>
-                            <IconButton
-                                id="basic-button"
-                                aria-controls="basic-menu"
-                                aria-haspopup="true"
-                                aria-expanded={open ? 'true' : undefined}
-                                onClick={(e) => setOpDrop([e.currentTarget, 'tocicon'])}>
-                                <TocIcon />
-                            </IconButton>
-                            <Menu
-                                id="basic-menu"
-                                anchorEl={opDrop[0]}
-                                open={open}
-                                onClose={() => setOpDrop([null, null])}
-                                MenuListProps={{
-                                    'aria-labelledby': 'basic-button',
-                                }}
-                            >
-                                {opDrop[1] === 'textfieldicon' ? <TextMenu/> : <DataMenu/>}
-                            </Menu>
-                        </div>
+            <div className='pdfArea' id='pdfArea'>
+                <div>
+                    <IconButton onClick={() => {setOpenModal(true);setModalItem('text')}}>
+                        <TextFieldsIcon />
+                    </IconButton>
 
-                        {reportData.map(reportElement =>
-                            <DraggableItem label='clique aqui...'>
-                                {reportElement}
-                            </DraggableItem>
-                        )}
-                    </div>
-                </Grid>
-            </Grid>
+                    <IconButton onClick={() => {setOpenModal(true);setModalItem('graph')}}>
+                        <InsertChartIcon />
+                    </IconButton>
+
+                    <IconButton onClick={() => {setOpenModal(true);setModalItem('table')}}>
+                        <TocIcon />
+                    </IconButton>
+                </div>
+                                    
+                <Dialog
+                        open={openModal}
+                        onClose={() => setOpenModal(false)}
+                >
+                    {
+                        modalItem === 'text' ? <TextMenu /> :
+                        modalItem === 'graph' ? <DataMenu /> :
+                        modalItem === 'table' ? <DataMenu /> : "Ops!"
+                    }
+                </Dialog>
+                
+                <div className='dados'>
+                    <DraggableItem label='Grafico que exemploifica aluma coisa'>
+                        <SimpleChart />
+                    </DraggableItem>
+
+                    {reportData.map(reportElement =>
+                        <DraggableItem label={reportElement.label}>
+                            {reportElement.value}
+                        </DraggableItem>
+                    )}
+                </div>
+            </div>
         </div>
     )
 }

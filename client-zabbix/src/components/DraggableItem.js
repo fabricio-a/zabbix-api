@@ -4,8 +4,9 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyle = makeStyles({
     box: {
-        border: '2px solid black',
-        borderRadius: '5px'
+        border: '1px solid black',
+        borderRadius: '5px',
+        width: '80%'
     },
 
     drag: {
