@@ -13,7 +13,8 @@ const useStyle = makeStyles({
         textAlign: 'center',
         backgroundColor: '#595959',
         height: '25px',
-        cursor: 'crosshair'
+        cursor: 'crosshair',
+        color: 'white'
     }
 })
 
@@ -21,13 +22,13 @@ export default function DraggableItem(props) {
     const classes = useStyle()
 
     return (
-            <Draggable
-                handle='.handle'
-            >
-                <div className={classes.box}> 
-                    <div className={`handle ${classes.drag}`}>{props.label}</div>
-                    {props.children}
-                </div>
-            </Draggable>
+        <Draggable
+            handle='.handle'
+        >
+            <div className={classes.box}> 
+                <div className={`handle ${classes.drag}`}>{props.label}</div>
+                {props.children}
+            </div>
+        </Draggable>
     )
 }

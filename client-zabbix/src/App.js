@@ -26,7 +26,7 @@ function App() {
         <MainScreen />
       </div>
     </ThemeProvider>
-  );
+  )
 }
 
-export default App;
+export default App
