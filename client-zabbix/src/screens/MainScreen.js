@@ -30,7 +30,7 @@ export default function MainScreen() {
     const graphsElements = useSelector(state => state.report.graphs)
     const textsElements = useSelector(state => state.report.texts)
     const tablesElements = useSelector(state => state.report.tables)
-    
+
     const getPDF = () => {
         const input = document.getElementById('pdfArea')
         input.style.height = '100%'
@@ -101,13 +101,17 @@ export default function MainScreen() {
                 </Dialog>
                 
                 <div className='dados'>
-                    <DraggableItem label='Grafico de alguma coisa'>
-                        <SimpleChart />
-                    </DraggableItem>
-
                     {textsElements.map(textElement =>
                         <DraggableItem label={'Clique para arrastar...'}>
                             {textElement}
+                        </DraggableItem>
+                    )}
+
+                    {graphsElements.map(graphElement =>
+                        <DraggableItem label={'Clique para arrastar...'}>
+                            <SimpleChart
+                                
+                            />
                         </DraggableItem>
                     )}
                 </div>

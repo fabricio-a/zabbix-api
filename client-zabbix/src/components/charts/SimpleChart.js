@@ -1,31 +1,19 @@
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts'
 
 export default function SimpleChart(props) {
-    const data = [{name: 'Page A', uv: 400, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 500, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 600, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 700, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 400, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 300, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 200, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 100, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 800, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 800, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 700, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 700, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 900, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 900, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 400, pv: 2400, amt: 2400},
-        {name: 'Page A', uv: 100, pv: 2400, amt: 2400},
-    ]
+    const {
+        data,
+        width,
+        height
+    } = props
 
     return (
-        <LineChart width={600} height={300} data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+        <LineChart width={width} height={height} data={data} margin={{ top: 5, right: 0, bottom: 5, left: 0 }}>
             <Line type="monotone" dataKey="uv" stroke="#8884d8" />
             <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-      </LineChart>
+        </LineChart>
     )
 }

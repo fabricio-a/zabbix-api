@@ -7,6 +7,17 @@ header {
     width: 90%;
 }
 
+.formulario {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: start;
+    height: 450px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+} 
+
 .root {
     color: #fff;
     display: flex;
@@ -31,18 +42,6 @@ header {
     height: 90vh;
     box-shadow: 0px 0px 10px rgb(255,255,255,0.2);
 }
-
-
-form {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: start;
-    height: 450px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-} 
 
 .menuText {
     display: flex;

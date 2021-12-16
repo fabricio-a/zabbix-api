@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { incrementByAmount, increment } from '../../store/reportArea/reportSlice'
+import { useDispatch } from 'react-redux'
+import { addGraph } from '../../store/reportArea/reportSlice'
 import MySelect from './MySelect'
 import { Button } from '@mui/material'
 import DateTimeSelect from './DateTimeSelect'
 import Report from '../../requests/report'
+
+import './DataMenu.css'
 
 const report = Report()
 
@@ -19,7 +21,6 @@ export default function DataMenu () {
     const [graphsSelect, setGraphsSelect] = useState([])
     const [allGraphs, setAllGraphs] = useState([])
 
-    const count = useSelector(state => state.counter.value)
     const dispatch = useDispatch()
 
     const getHosts = () => {
@@ -50,8 +51,7 @@ export default function DataMenu () {
 
     const addGraph = dados => {
         console.log(dados)
-
-        setReportData([ ...reportData, <div>Dados vieram...</div>])
+        dispatch(addGraph(dados))
     }
 
     const generateReport = () => {
@@ -80,7 +80,7 @@ export default function DataMenu () {
     }, [hostSelect])
 
     return (
-        <div className='form'>
+        <div className='formulario'>
             <MySelect 
                 id='hostgroup-select'
                 label='Grupos de Hosts'
@@ -118,6 +118,6 @@ export default function DataMenu () {
     {/*                             <Button className='bt' variant='contained' color='primary' onClick={getPDF}>
                 Gerar PDF
             </Button> */}
-    </div>
+        </div>
     )
 }
