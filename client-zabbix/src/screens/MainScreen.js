@@ -90,8 +90,8 @@ export default function MainScreen() {
                 </div>
                                     
                 <Dialog
-                        open={openModal}
-                        onClose={() => setOpenModal(false)}
+                    open={openModal}
+                    onClose={() => setOpenModal(false)}
                 >
                     {
                         modalItem === 'text' ? <TextMenu /> :
@@ -107,12 +107,18 @@ export default function MainScreen() {
                         </DraggableItem>
                     )}
 
-                    {graphsElements.map(graphElement =>
-                        <DraggableItem label={'Clique para arrastar...'}>
-                            <SimpleChart
-                                
-                            />
-                        </DraggableItem>
+                    {graphsElements.map(graphElement => {
+
+                        return (
+                            <DraggableItem label={'Clique para arrastar...'}>
+                                <SimpleChart
+                                    xDataKey='clock'
+                                    lineDataKey='value'
+                                    data={graphElement.response}
+                                />
+                            </DraggableItem>
+                        )
+                    }
                     )}
                 </div>
             </div>

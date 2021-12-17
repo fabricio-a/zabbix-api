@@ -17,7 +17,6 @@ export default function DataMenu () {
     const [dateTill, setDateTill] = useState(new Date())
     const [hostSelect, setHostSelect] = useState([])
     const [hostGroupSelect, setHostGroupSelect] = useState([])
-    const [reportData, setReportData] = useState([])
     const [graphsSelect, setGraphsSelect] = useState([])
     const [allGraphs, setAllGraphs] = useState([])
 
@@ -49,7 +48,8 @@ export default function DataMenu () {
             })
     }
 
-    const addGraph = dados => {
+    const addData = dados => {
+        console.log('ONE MORE TIME....')
         console.log(dados)
         dispatch(addGraph(dados))
     }
@@ -61,7 +61,7 @@ export default function DataMenu () {
                 Math.trunc(dateTill.getTime()/1000),
                 graphsSelect
             )
-            .then(dados => addGraph(dados))
+            .then(dados => addData(dados))
     }
 
     useEffect(() => {
