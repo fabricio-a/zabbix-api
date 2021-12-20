@@ -84,7 +84,7 @@ export default function DataMenu () {
             <MySelect 
                 id='hostgroup-select'
                 label='Grupos de Hosts'
-                multiple={true} check={true}
+                multiple={false} check={false}
                 data={allHostGroup.map(group =>{ return {value: group.groupid, label: group.name} })}
                 selectValue={hostGroupSelect}
                 selectHandler={(e) => setHostGroupSelect(e.target.value)}    
@@ -114,10 +114,6 @@ export default function DataMenu () {
             <Button className='bt' variant='contained' color='primary' onClick={generateReport}>
                 Buscar Dados
             </Button>
-
-    {/*                             <Button className='bt' variant='contained' color='primary' onClick={getPDF}>
-                Gerar PDF
-            </Button> */}
         </div>
     )
 }

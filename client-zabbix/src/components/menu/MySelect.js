@@ -39,9 +39,6 @@ export default function MySelect(props) {
                 multiple={multiple}
                 className={classes.select}
             >
-                <MenuItem value="-1">
-                    Todos
-                </MenuItem>
                 {
                     data.map(element => <MenuItem key={element.value} value={element.value}>{check ? <Checkbox checked={selectValue.includes(element.value)}/> : <></>} {element.label}</MenuItem>)
                 }
