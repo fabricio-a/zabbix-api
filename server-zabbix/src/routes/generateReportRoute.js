@@ -80,25 +80,32 @@ generateReportRoute.get('/history', (req, res) => {
     let allItems = []
 
     getDataFromZabbix('item.get', { output: 'extend', graphids })
-        .then(items => {
-            const itemids = items.map(item => parseInt(item.itemid))
+        .then(async items => {
+            let data = []
+            let historyGetParams = {}
+            let history_response = []
 
-            let historyGetParams = {
-                output: 'extend',
-                itemids: itemids,
-                time_from,
-                time_till
+            for(const item of items) {
+                historyGetParams = {
+                    history: item.value_type,
+                    output: 'extend', 
+                    itemids: parseInt(item.itemid),
+                    time_from,
+                    time_till
+                }
+
+                history_response = await getDataFromZabbix('history.get', historyGetParams)
+
+                data.push({
+                    item,
+                    history_response
+                })
             }
 
-            console.log(historyGetParams)
-
-            allItems = items
-
-            return getDataFromZabbix('history.get', historyGetParams)
+            return data
         })
         .then(response => {
-            if(response.length>0)console.log('RESPONDE')
-            res.send({ response, allItems })
+            res.send({response})
         })
         .catch(error => res.send(error))
 })

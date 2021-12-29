@@ -49,9 +49,8 @@ export default function DataMenu () {
     }
 
     const addData = dados => {
-        console.log('ONE MORE TIME....')
-        console.log(dados)
-        dispatch(addGraph(dados))
+        console.log(dados.response)
+        dispatch(addGraph(dados.response))
     }
 
     const generateReport = () => {

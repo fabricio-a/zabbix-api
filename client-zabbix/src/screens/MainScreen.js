@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from 'react'
 import logo from '../assets/logo-roost.png'
-import DraggableItem from '../components/DraggableItem'
+import PdfContent from '../components/PdfContent'
 import Dialog from '@mui/material/Dialog'
 import SimpleChart from '../components/charts/SimpleChart'
 import Report from '../requests/report'
@@ -66,7 +66,7 @@ export default function MainScreen() {
                         <SaveIcon color='primary'/>
                     </IconButton>
                     <IconButton>
-                        <PictureAsPdfIcon color='primary'/>
+                        <PictureAsPdfIcon color='primary' onClick={() => getPDF()}/>
                     </IconButton>
                     <IconButton>
                         <RefreshIcon color='primary'/>
@@ -102,21 +102,19 @@ export default function MainScreen() {
                 
                 <div className='dados'>
                     {textsElements.map(textElement =>
-                        <DraggableItem label={'Clique para arrastar...'}>
+                        <PdfContent label={''}>
                             {textElement}
-                        </DraggableItem>
+                        </PdfContent>
                     )}
 
                     {graphsElements.map(graphElement => {
-
                         return (
-                            <DraggableItem label={'Clique para arrastar...'}>
+                            <PdfContent label={''}>
                                 <SimpleChart
+                                    data={graphElement}
                                     xDataKey='clock'
-                                    lineDataKey='value'
-                                    data={graphElement.response}
                                 />
-                            </DraggableItem>
+                            </PdfContent>
                         )
                     }
                     )}
